@@ -40,12 +40,16 @@ class LinkedList{
                    
             }
         }
+        void printTraversal(LinkedList L){
+            
+        }
         //Return a link to the 
         void get(T elem){
 
         int getLength(){
             return length;
         }
+
     private:
         Node<T>* head;
         Node<T>* tail;
