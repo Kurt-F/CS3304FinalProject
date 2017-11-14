@@ -32,6 +32,7 @@ int main(){
 	cout << "What is the value of the node with key 2(Yugoslavia)? \n" << tree->get(3) << endl << endl;
 	cout << "What is the value of the node with key 1231231? \n" << tree->get(1231231) << endl;
 	cout << "What happens when you use an invalid key? \n";
+	//Use a try-catch block to handle the error thrown by using an invalid key
 	try{
 	cout << "Pointer to the value of the node with index -1 is: " << tree->get(-1) << endl;
 	}
@@ -48,15 +49,28 @@ int main(){
 	list->add(1, 1);
 	cout << "1 added" << endl;
 	list->add(3, 3);
-	list->traverse();
-	cout << "Does the list contain 3? ";
-	cout << pBool(list->contains(3)) << endl;
-	cout << "Does the list contain 5? ";
-	cout << pBool(list->contains(5)) << endl;
-	cout << "Removing 3" << endl;
+	/*cout << "Removing 3" << endl;
 	list->remove(3);
 	cout << "Does the list contain 3? ";
 	cout << pBool(list->contains(3)) << endl;
+	cout << "adding 5 to the skiplist" << endl;
+    list->add(5,5);
+    cout << "adding 123 to the skiplist" << endl;
+    list->add(123,123);
+    cout << "adding 32 to the skiplist" << endl;
+    list->add(32, 32);
+    cout << "skiplist contains 32: " << list->contains(32) << endl;
+    cout << "skiplist contains 0: " << list->contains(0) << endl;
+    cout << "Removing the node with key 32" << endl;
+    list->remove(32);
+    cout << "skiplist contains 32: " << list->contains(32) << endl;*/
+    char choice = 'n';
+    cout << "Would you like to display a graphical depiction of the skiplist? (it takes up a lot of space)\n"
+    "(y/n): ";   
+    cin >> choice;
+    if(choice == 'y' || choice == 'Y')
+        list->traverse();
+
 
 
 

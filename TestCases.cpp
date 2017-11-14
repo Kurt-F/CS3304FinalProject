@@ -89,7 +89,7 @@ void intTest(){
         */
         n = 0;
         outputName = "SkipList_int.csv";
-        SkipList<int>* slist = new SkipList<int>(10, 0);
+        SkipList<int>* slist = new SkipList<int>(10, 0);  
         //slist->traverse();
         //cout << slist->contains(3) <<endl;
         /*while(n < iterSize){
@@ -122,7 +122,7 @@ void intTest(){
             n+=step;
             clock_t t0 = clock();  
             for(int i = 0; i < n; i++)
-                llist->add(i,i);
+                llist->add(rand(),rand());
             clock_t t1 = clock(); 
             double t = double(t1 - t0) / CLOCKS_PER_SEC;
              //Convert time and number of additions to string

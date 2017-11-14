@@ -132,21 +132,16 @@ class SkipList{
             //  from memory, and then the pointers of the nodes which pointed to  the deleted node 
             //  are "repaired. "In order to prevent segmentation faults, we check to see if the 
             //  node we're at is the last node. i.e. check if cursor->next[i]->next[i] is ever null.
-            for(int i = 0; i < h; i++ ){
+            for(int i = 0; i < maxHeight; i++ ){
                 //If update[i]->next[i] is an ending node for its level, then just remove it
                 if(update[i]->next[i]->next[i] == NULL){
-                    delete update[i]
-                    update[i]->next[i] NULL;
+                    delete update[i];
+                    update[i]->next[i] = NULL;
                 }
                 //If update[i] is not an ending node, then use a temporary variable to avoid losing the next
                 //  part of the list
                 else{
-                    //Store the node that should be after our new node in temp
-                    Node<T>* temp = update[i]->next[i];
-                    //Insert our new node into the list
-                    update[i]->next[i] = node;
-                    //Reconnect the list
-                    node->next[i] = temp;
+
                 }
             }
             
@@ -215,7 +210,6 @@ class SkipList{
                 value = (double) rand()/RAND_MAX;
                 level++;
             }
-            cout << level << endl;
             return level;
         }
         int length;
