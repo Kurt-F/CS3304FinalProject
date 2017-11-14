@@ -1,0 +1,10 @@
+
+1. COMPILING
+	On my system (linux mint 64 bit) I used the following command to compile the entire program:
+
+    	g++ -std=c++11 Main.cpp -o <executablename>
+
+	On a windows system ".exe" should terminate the executable name, and you might have to install the gnu compiler. 
+
+2. RUNNING
+	The whole program is run by executing the binary file compiled as above, and will proceed to generate several csv files as well as run tests, showing status messages on the command line. The csv files contain timing data that may be used to heuristically analyse and plot the running times of various operations.
