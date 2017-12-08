@@ -3,6 +3,7 @@
 #include <fstream>
 #include <ctime>
 #include <string>
+#include <cmath>
 #include "LinkedList.cpp"
 #include "BinaryTree.cpp"
 #include "SkipList.cpp"
@@ -22,16 +23,20 @@
 ***********************************************************************************************************/
 
 //The maximum number of iterations for all tests, set to a lower number if need be.
-int const iterSize = 20000;
+int const iterSize = 10000;
 //How much the test functions increase the interval each iteration.
-int const step = 1000;
+int const step = 10;
 
 //Helper function that writes a preformatted string (s) to file with the associated filename (n)
 void writeToFile(string s, string n){
     ofstream file;
+    //Change the filename from a string to a char array
     const char* name = n.c_str();
+    //Open the file
     file.open(name);
+    //Write to file
     file << s;
+    //Close the file
     file.close();
 }
 
@@ -40,7 +45,7 @@ void writeToFile(string s, string n){
 *	Randomly inserts increasing numbers of random integers
 *
 */
-void intTest(){
+void insertTest(){
         srand(time(NULL));
         /*
         * Insert increasingly large sets of random integers into a binary tree
@@ -61,7 +66,7 @@ void intTest(){
             clock_t t0 = clock();
             //Make n additions
             for(int i = 0; i < n; i++){
-                tree->add(rand(),i);
+                tree->add(rand(),rand());
             }
             //stop timing
             clock_t t1 = clock();
@@ -89,15 +94,12 @@ void intTest(){
         */
         n = 0;
         outputName = "SkipList_int.csv";
-        SkipList<int>* slist = new SkipList<int>(10, 0);  
-        //slist->traverse();
-        //cout << slist->contains(3) <<endl;
-        /*while(n < iterSize){
-            cout << "test in test while" << endl;            
+        SkipList<int>* slist = new SkipList<int>(log2(iterSize)*2, 0);  
+        while(n < iterSize){
             n+=step;
             clock_t t0 = clock();           
             for(int i = 0; i < n; i++)
-                slist->add(rand(),i);
+                slist->add(rand(),rand());
             clock_t t1 = clock(); 
             double t = double(t1 - t0) / CLOCKS_PER_SEC;
             //Convert time and number of additions to string
@@ -106,10 +108,11 @@ void intTest(){
             //Insert a line into our output string
             output = output + N + "," + T + ",\n";
             delete slist;
-            slist = new SkipList<int>(iterSize);
+            slist = new SkipList<int>(log2(n)*2, 0);
         }
         writeToFile(output, outputName);
         std::cout << "Skip List insertion testing finished, output is in " << outputName << endl;
+        output = "";
         delete slist;
 
         /*
@@ -119,18 +122,21 @@ void intTest(){
         outputName = "LinkedList_int.csv";
         LinkedList<int>* llist = new LinkedList<int>();
         while(n < iterSize){
+            cout << n << endl;
             n+=step;
             clock_t t0 = clock();  
-            for(int i = 0; i < n; i++)
+            for(int i = 0; i < n; i++){
                 llist->add(rand(),rand());
+            }
             clock_t t1 = clock(); 
+            //Find the clocks elapsed, and convert to seconds
             double t = double(t1 - t0) / CLOCKS_PER_SEC;
              //Convert time and number of additions to string
             string N = to_string(n);
             string T = to_string(t);
             //Insert a line into our output string
             output = output + N + "," + T + ",\n";
-            delete slist;
+            delete llist;
             llist = new LinkedList<int>();
         }
         writeToFile(output, outputName);
@@ -138,14 +144,35 @@ void intTest(){
         delete llist;
 	}
 
+//Test the time it takes to delete nodes
+void deleteTest(){
+    SkipList<int>* list = new SkipList<int>(2 * log2(iterSize),0);
+    string output = "";
+    string outputName = "deleteTest_sl.csv";
+    //Populate a list with itersize^2 values
+    for(int i = 0; i < iterSize; i++){
+        list->add(rand()%iterSize*iterSize, i);
+    }
 
-void objectTest(){
+    for(int n = 0; n < iterSize; n+= step){
+        clock_t t0 = clock();  
+        for(int i = 0; i < n; i++)
+            list->remove(i);
+        clock_t t1 = clock(); 
+        double t = double(t1 - t0) / CLOCKS_PER_SEC;
+        //Convert time and number of additions to string
+        string N = to_string(n);
+        string T = to_string(t);
+        //Insert a line into our output string
+        output = output + N + "," + T + ",\n";
+    }
+    writeToFile(output, outputName);
+    std::cout << "Skip List removal testing finished, output is in " << outputName << endl;
 
+
+    
 }
 
-void searchTest(){
-
-}
 
 //Test each data structure with sequences of objects
 //Used for determining whether to insert or remove values. Not a real coinflip, biased towards insertion.

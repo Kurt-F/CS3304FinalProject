@@ -39,44 +39,62 @@ int main(){
 	catch(logic_error& e){
 		cout << "The answer is it returns null, or throws an error if null is not defined for T" << endl << endl;
 	}
+	cout << "Inserting a random number < 10 of integer pointers into a skiplist" << endl;
+	SkipList<int*>* plist = new SkipList<int*>(log2(101), NULL);
+	int end = rand()%10;
+	for(int i = 0; i < end; i++){
+		plist->add(i, &i);
+	}
+	cout << "Printing all addresses in the pointer list:" << endl;
+	int i = 0;
+	while(plist->getLength()){
+		cout << plist->search(i)->getValue() << endl;
+		plist->remove(i);
+		i++;
+	}
+	cout << "Inserting a random number < 100 of nodes into a skiplist" << endl;
+	SkipList<Node<int>*>* nlist = new SkipList<Node<int>*>(log2(101), NULL);
+	end = rand()%100;
+	for(int i = 0; i < end; i++){
+		Node<int>* node = new Node<int>(i,i,i);
+		nlist->add(i, node);
+	}
+	cout << "Printing all adresses in the node list:" << endl;
+	i = 0;
+	while(nlist->getLength()){
+		cout << nlist->search(i)->getValue() << endl;
+		nlist->remove(i);
+		i++;
+	}
+
 	
 
 	//test skiplists
 	SkipList<int>* list = new SkipList<int>(100, 0);
-	cout << "list init" << endl;
-	list->add(0, 0);
-	cout << "0 added" << endl;
-	list->add(1, 1);
-	cout << "1 added" << endl;
-	list->add(3, 3);
-	/*cout << "Removing 3" << endl;
-	list->remove(3);
-	cout << "Does the list contain 3? ";
-	cout << pBool(list->contains(3)) << endl;
-	cout << "adding 5 to the skiplist" << endl;
-    list->add(5,5);
-    cout << "adding 123 to the skiplist" << endl;
-    list->add(123,123);
-    cout << "adding 32 to the skiplist" << endl;
-    list->add(32, 32);
-    cout << "skiplist contains 32: " << list->contains(32) << endl;
-    cout << "skiplist contains 0: " << list->contains(0) << endl;
-    cout << "Removing the node with key 32" << endl;
-    list->remove(32);
-    cout << "skiplist contains 32: " << list->contains(32) << endl;*/
-    char choice = 'n';
-    cout << "Would you like to display a graphical depiction of the skiplist? (it takes up a lot of space)\n"
-    "(y/n): ";   
-    cin >> choice;
-    if(choice == 'y' || choice == 'Y')
-        list->traverse();
+    //Fill the list with random numbers
+	cout << "Populating a skiplist with 50 integers with random key" << endl;
+    for(int i = 0; i < 50; i++)
+    	list->add(rand()%100,i);
+   	//Remove all occurences of 13
+   	cout << "Removing all occurences of 13 from the skiplist" << endl;
+   	while(!list->remove(13));
+    cout << "Skip list populated with random values, enter an integer to search keys. Enter -1 to quit." << endl;
+    int key = 0;
+ 	while(key >-1){
+ 		cin >> key;
+ 		Node<int>* result = list->search(key);
+ 		if(result)
+ 			cout << "Key found! Value = "<< result->getValue() << endl;
+ 		else if(key > -1)
+ 			cout << "Key not found." << endl;
+ 	}
 
 
 
 
-	//Run insertion/removal tests
-	//intTest();
+	//Run insertion/search tests
+	insertTest();
 	//objectTest();
-	//searchTest();
+	deleteTest();
 	return 0;
 }

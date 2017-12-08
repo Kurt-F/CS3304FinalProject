@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <cstdlib>
-#include <iostream>
 
 /**********************************************************************************************************
 *   SkipList.cpp
@@ -52,13 +51,24 @@ template<class T>
 class SkipList{
     public:
         //h denotes the maximum height of this skiplist
-        //T is a dummy value for head
+        //T is a dummy value for head used in place of null, to avoid errors when T has no null value
         SkipList(int h, T dummy){
             srand(time(NULL));
             length = 0;
             maxHeight = h;
             //Head is simply an array of pointers
             head = new Node<T>(maxHeight, 0, dummy);
+        }
+
+        //Destructor 
+        //  Because the lowest level of the list is just a normal linked list, we can delete it like normal
+        ~SkipList(){
+            Node<T>* next = head;
+            while(next){
+                Node<T>* temp = next->next[0];
+                delete next;
+                next = temp;
+            }
         }
         
         //Add a new value to the skiplist
@@ -105,47 +115,63 @@ class SkipList{
                     node->next[i] = temp;
                 }
             }
+            //increase length
+            this->length++;
         }
-
-        void remove(int key){
+        //Return 1 if the key cannot be found, 0 otherwise
+        int remove(int key){
             //Create a cursor pointer
             Node<T>* cursor = head;
             //Array for storing the nodes to be updated.
             Node<T> *update[maxHeight];
+            for(int i = 0; i < maxHeight; i++)
+                update[i] = NULL;
             //Search for the node right before where the node we want to delete is.
             //Use decrementing so that search starts at the top level and descends.
             for(int i = maxHeight -1 ; i >= 0; i--){
-                /*cout << cursor->next[21];
-                cout << ". Next called" << endl;
-                cout << cursor->next[i]->getKey();
-                cout << ". getKey() called" << endl;*/
                 //While we haven't reached nil and while the next value is greater than our previous one, go to the next node
-                while(cursor->next[i] != NULL && cursor->next[i]->getKey() < key){
+                while(cursor->next[i] && cursor->next[i]->getKey() < key){
                     //Go to the next node at the ith level
                     cursor = cursor->next[i];
+
                 }
                 //Add each node we descend on to the update array
                 update[i] = cursor;
+            }
+            //If we iterate through to the 0th level and can't find our node, do nothing            
+            if(cursor->next[0]->getKey() != key){
+                return 1; 
             }
             //Cursor is now at a node right before where we want to insert our new node. The forward 
             //  addresses of the node to be deleted are stored in an array, then the node is deleted
             //  from memory, and then the pointers of the nodes which pointed to  the deleted node 
             //  are "repaired. "In order to prevent segmentation faults, we check to see if the 
             //  node we're at is the last node. i.e. check if cursor->next[i]->next[i] is ever null.
-            for(int i = 0; i < maxHeight; i++ ){
-                //If update[i]->next[i] is an ending node for its level, then just remove it
-                if(update[i]->next[i]->next[i] == NULL){
-                    delete update[i];
-                    update[i]->next[i] = NULL;
+            this->length--;
+            int height = cursor->next[0]->getH();
+            //We will change all pointers to the node to be deleted before we delete it, so make a temp pointer
+            Node<T>* temp = cursor->next[0];
+            //Iterate up to the height of the node we're deleting and change the pointers in update
+            for(int i = 0; i < height; i++){
+                //
+                if(!update[i]->next[i]){
+                    //do nothing
                 }
-                //If update[i] is not an ending node, then use a temporary variable to avoid losing the next
-                //  part of the list
-                else{
+                //If the node to be deleted is the last at this level, then just change the pointer in update.
+                else if(update[i]->next[i]->next && !update[i]->next[i]->next[i]){
+                    update[i]->next[i] = NULL;
 
                 }
+                //Node has a non-null descendant
+                else{
+                    //Set the node in update[i] to "jump over" the node to be deleted on this level
+                    update[i]->next[i] = update[i]->next[i]->next[i];
+                }
             }
+            //Delete the now isolated (except for the temp pointer) node
+            delete temp;
+            return 0;
             
-            //If we iterate through to the 0th level and can't find our node, do nothing            
         }
         //Searches for and returns the node with the given key, if it exists
         Node<T>* search(int key){
@@ -177,31 +203,12 @@ class SkipList{
             return true;
         }
 
-        //Traverses the skip list and print a representation to the terminal
-        void traverse(){
-            //for(int i = 0; i < maxHeight; i++)
-            //    cout << "head["<<i<<"] = " << head[i];
-            //Iterate through each level
-            Node<T>* cursor;
-            for(int i = 0; i < maxHeight; i++){
-                cursor = head->next[i];
-                cout << "Level " << i << ": ";
-                while(cursor != NULL){
-                    string padding = "\t";
-                    cout << "(" << cursor->getKey() << "," << cursor->getValue() << ")" << padding;
-                    if(cursor->next != NULL)
-                        cursor = cursor->next[i];
-                    else
-                        break;
-                }
-                cout << endl;
-            }
-        }
-
-        
+        int getLength(){
+            return length;
+        }        
             
     private:
-        //Generate a height for a new node
+        //Generate a height for a new node"
         int genHeight(){
             int level = 1;
             //Keep "flipping a coin" to determine height

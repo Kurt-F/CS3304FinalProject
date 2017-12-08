@@ -1,4 +1,3 @@
-#include <iostream>
 //TODO: Finish remove function
 //A node that contains a value, a key value, a left child, and a right child.
 template <class T>

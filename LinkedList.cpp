@@ -1,4 +1,3 @@
-#include <iostream>
 #include <stdlib.h>
 
 using namespace std;
@@ -29,6 +28,16 @@ class LinkedList{
         LinkedList(){
             head = NULL;
             length = 0;
+        }
+
+        //Define a destructor
+        ~LinkedList(){
+            LNode<T>* next = head;
+            while(next){
+                LNode<T>* temp = next->next;
+                delete next;
+                next = temp;
+            }
         }
 
         //Add a key to the list
@@ -91,8 +100,7 @@ class LinkedList{
                     else
                         cursor = cursor->next;
                 }
-            //If we iterate through the entire list and can't find it, return
-            return;
+            //If we iterate through the entire list and can't find it, do nothing
         }
         int getLength(){
             return length;
